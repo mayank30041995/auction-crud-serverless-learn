@@ -1,0 +1,36 @@
+service: sls-base
+
+plugins:
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: ap-south-1
+
+functions:
+  createAuction:
+    handler: src/handlers/createAuction.handler
+    events:
+      - http:
+          method: POST
+          path: /auction
+
+resources:
+  Resources:
+    AuctionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: AuctionsTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+custom:
+  bundle: linting:false
