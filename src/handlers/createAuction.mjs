@@ -15,6 +15,9 @@ async function createAuction(event, context) {
     title,
     status: "OPEN",
     createdAt: now.toISOString(),
+    highestBid: {
+      amount: 0,
+    },
   };
 
   try {
@@ -40,6 +43,7 @@ export const handler = commonMiddleware(createAuction);
 // sls deploy function --function createAuction
 
 // sls logs -f getAuctions -t
+// sls logs -f placeBid -t
 
 // git clone https://github.com/codingly-io/sls-base.git auction-service
 // rmdir /s /q .git  // remove git  init folder
