@@ -9,6 +9,8 @@ provider:
   memorySize: 256
   stage: ${opt:stage, 'dev'}
   region: ap-south-1
+  environment:
+    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
   iamRoleStatements:
     - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
 
@@ -25,4 +27,8 @@ functions:
           path: /auction
 
 custom:
-  bundle: linting:false
+  AuctionsTable:
+    name: !Ref AuctionsTable # this will add table name append with envirnment
+    arn: !GetAtt AuctionsTable.Arn # this will add table arn append with envirnment
+  bundle:
+    linting: false
