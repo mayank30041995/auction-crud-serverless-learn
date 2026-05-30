@@ -1,39 +1,36 @@
 import AWS from "aws-sdk";
-import middy from "@middy/core";
-import commonMiddleware from "../lib/commonMiddleware.mjs";
 import createError from "http-errors";
+import commonMiddleware from "../lib/commonMiddleware.mjs";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-async function getAuctions(event, context) {
-  const { status } = event.queryStringParameters;
-  let auctions;
+const getAuctions = async (event) => {
+  const status = event.queryStringParameters?.status || "OPEN";
 
   const params = {
     TableName: process.env.AUCTIONS_TABLE_NAME,
     IndexName: "statusAndEndDate",
     KeyConditionExpression: "#status = :status",
-    ExpressionAttributeValues: {
-      ":status": status,
-    },
     ExpressionAttributeNames: {
       "#status": "status",
+    },
+    ExpressionAttributeValues: {
+      ":status": status,
     },
   };
 
   try {
     const result = await dynamodb.query(params).promise();
 
-    auctions = result.Items;
+    return {
+      statusCode: 200,
+      body: JSON.stringify(result.Items),
+    };
   } catch (error) {
-    console.error(error);
-    throw new createError.InternalServerError(error);
-  }
+    console.error("DynamoDB Error:", error);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(auctions),
-  };
-}
+    throw new createError.InternalServerError(error.message);
+  }
+};
 
 export const handler = commonMiddleware(getAuctions);
