@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
-import commonMiddleware from "../lib/commonMiddleware.mjs";
+import commonMiddleware from "../lib/commonMiddleware.js";
 import createError from "http-errors";
-import { getAuctionById } from "./getAuction.mjs";
+import { getAuctionById } from "./getAuction.js";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 

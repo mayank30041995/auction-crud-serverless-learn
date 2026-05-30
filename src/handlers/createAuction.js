@@ -5,8 +5,8 @@ import createError from "http-errors";
 import validator from "@middy/validator";
 import { transpileSchema } from "@middy/validator/transpile";
 
-import commonMiddleware from "../lib/commonMiddleware.mjs";
-import createAuctionSchema from "../lib/schemas/createAuctionSchema.mjs";
+import commonMiddleware from "../lib/commonMiddleware.js";
+import createAuctionSchema from "../lib/schemas/createAuctionSchema.js";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 

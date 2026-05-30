@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
 import middy from "@middy/core";
-import commonMiddleware from "../lib/commonMiddleware.mjs";
+import commonMiddleware from "../lib/commonMiddleware.js";
 import createError from "http-errors";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();

@@ -5,7 +5,7 @@ import httpErrorHandler from "@middy/http-error-handler";
 
 export default (handler) =>
   middy(handler).use([
-    httpJsonBodyParser(),
+    // httpJsonBodyParser(),
     httpEventNormalizer(),
     httpErrorHandler(),
   ]);

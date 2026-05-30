@@ -1,6 +1,11 @@
 import AWS from "aws-sdk";
 import createError from "http-errors";
-import commonMiddleware from "../lib/commonMiddleware.mjs";
+
+import validator from "@middy/validator";
+import { transpileSchema } from "@middy/validator/transpile";
+
+import commonMiddleware from "../lib/commonMiddleware.js";
+import getAuctionsSchema from "../lib/schemas/getAuctionsSchema.js";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
@@ -27,10 +32,20 @@ const getAuctions = async (event) => {
       body: JSON.stringify(result.Items),
     };
   } catch (error) {
-    console.error("DynamoDB Error:", error);
-
+    console.error(error);
     throw new createError.InternalServerError(error.message);
   }
 };
 
-export const handler = commonMiddleware(getAuctions);
+export const handler = commonMiddleware(getAuctions).use(
+  validator({
+    eventSchema: transpileSchema(getAuctionsSchema),
+  }),
+);
+
+// With logs
+// sls invoke local -f getAuctions -l --data "{\"queryStringParameters\":{\"status\":\"OPEN\"}}"
+
+// or, if invoking the deployed Lambda:
+
+// sls invoke -f getAuctions -l --data "{\"queryStringParameters\":{\"status\":\"OPEN\"}}"
