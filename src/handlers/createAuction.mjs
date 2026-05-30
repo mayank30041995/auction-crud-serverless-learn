@@ -45,5 +45,9 @@ export const handler = commonMiddleware(createAuction);
 // sls logs -f getAuctions -t
 // sls logs -f placeBid -t
 
+// sls logs -f processAuctions -t
+// sls logs -f processAuctions --startTime  1m
+// sls logs --help
+
 // git clone https://github.com/codingly-io/sls-base.git auction-service
 // rmdir /s /q .git  // remove git  init folder
