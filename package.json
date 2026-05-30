@@ -20,6 +20,8 @@
     "@middy/http-event-normalizer": "^7.6.5",
     "@middy/http-json-body-parser": "^7.6.5",
     "@middy/validator": "^7.6.5",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "aws-sdk": "^2.639.0",
     "http-errors": "^2.0.1",
     "uuid": "^14.0.0"

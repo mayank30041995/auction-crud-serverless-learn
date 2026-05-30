@@ -1,12 +1,16 @@
 import { v4 as uuid } from "uuid";
 import AWS from "aws-sdk";
-import middy from "@middy/core";
-import commonMiddleware from "../lib/commonMiddleware.mjs";
 import createError from "http-errors";
+
+import validator from "@middy/validator";
+import { transpileSchema } from "@middy/validator/transpile";
+
+import commonMiddleware from "../lib/commonMiddleware.mjs";
+import createAuctionSchema from "../lib/schemas/createAuctionSchema.mjs";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-async function createAuction(event, context) {
+const createAuction = async (event) => {
   const { title } = event.body;
   const now = new Date();
   const endDate = new Date();
@@ -32,18 +36,23 @@ async function createAuction(event, context) {
       .promise();
   } catch (error) {
     console.error(error);
-    throw new createError.InternalServerError(error);
+    throw new createError.InternalServerError(error.message);
   }
 
   return {
     statusCode: 201,
     body: JSON.stringify(auction),
   };
-}
+};
 
-export const handler = commonMiddleware(createAuction);
+export const handler = commonMiddleware(createAuction).use(
+  validator({
+    eventSchema: transpileSchema(createAuctionSchema),
+  }),
+);
 
 // sls deploy function --function createAuction
+// node -e "import('@middy/validator/transpile').then(console.log)"
 
 // sls logs -f getAuctions -t
 // sls logs -f placeBid -t
